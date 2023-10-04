@@ -1,5 +1,7 @@
 import re
 
+# Todo_1 マイナスの式の縦書きにするメソッドを整える
+# Todo_2 リファクタリング
 
 class VerticalCalculator:
 
@@ -30,7 +32,7 @@ class VerticalCalculator:
 
   def is_too_many_problems(self) -> bool:
     if len(self.formula_list) > 5:
-      print('エラー: 式の数が多すぎます。')
+      print('\nエラー: 式の数が6個以上になっています。')
       return True
 
     return False
@@ -44,6 +46,15 @@ class VerticalCalculator:
 
     return False
 
+  def has_long_formula(self, formula: str) -> bool:
+    formulaElements: list = re.split(r'[ ]', formula)
+
+    if len(formulaElements) != 3:
+      print('\nエラー: 二つ以上の演算子が含まれている式があります。')
+      return True
+
+    return False
+
   def has_long_number(self, formula: str) -> bool:
     numbers_list: list = []
 
@@ -53,11 +64,11 @@ class VerticalCalculator:
       numbers_list = formula.split(' - ')
 
     if len(numbers_list) == 0:
-      print('エラー: 正しい式を入力して下さい。')
+      print('\nエラー: 正しい式を入力して下さい。')
       return True
 
     if len(numbers_list[0]) > 4 or len(numbers_list[1]) > 4:
-      print('エラー: 4桁以上の数値を使用している式があります。')
+      print('\nエラー: 4桁以上の数値を使用している式があります。')
       return True
 
     return False
@@ -68,6 +79,8 @@ class VerticalCalculator:
 
     for formula in self.formula_list:
       if self.has_invalid_charactors(formula):
+        return True
+      if self.has_long_formula(formula):
         return True
       if self.has_long_number(formula):
         return True
@@ -110,7 +123,7 @@ class VerticalCalculator:
 
     return last_ele_space
 
-  def create_vertical_calculation(self, formula: str) -> str:
+  def create_vertical_calculation(self, formula: str) -> dict:
     # 奇数番目は必ず記号、偶数番目は必ず数字
     formulaElements: list = re.split(r'[ ]', formula)
 
@@ -132,15 +145,42 @@ class VerticalCalculator:
     last_ele_space: str = self.create_last_ele_space(
         len(total) - len(longer_str))
 
-    vertical_calculation: str = top_ele_space + shorter_str + '\n' + operator + ' ' + longer_str + '\n' + dotted_line + '\n' + last_ele_space + total
+    vertical_calculation_dict: dict = {
+        'first_line': top_ele_space + shorter_str + '    ',
+        'second_line': operator + ' ' + longer_str + '    ',
+        'third_line': dotted_line + '    ',
+        'fourth_line': last_ele_space + total + '    ',
+    }
 
-    return vertical_calculation
+    return vertical_calculation_dict
 
-  def print_vertical_calculations(self) -> None:
+  def create_vertical_calculations_dict(self) -> None:
+    vertical_calculations_dict: dict = {
+        'first_line': '',
+        'second_line': '',
+        'third_line': '',
+        'fourth_line': '',
+    }
+
     for formula in self.formula_list:
-      vertical_calculation: str = self.create_vertical_calculation(formula)
+      vertical_calculation_dict: dict = self.create_vertical_calculation(
+          formula)
 
-      print(vertical_calculation)
+      vertical_calculations_dict['first_line'] += vertical_calculation_dict[
+          'first_line']
+      vertical_calculations_dict['second_line'] += vertical_calculation_dict[
+          'second_line']
+      vertical_calculations_dict['third_line'] += vertical_calculation_dict[
+          'third_line']
+      vertical_calculations_dict['fourth_line'] += vertical_calculation_dict[
+          'fourth_line']
+
+    print()
+    print(vertical_calculations_dict['first_line'])
+    print(vertical_calculations_dict['second_line'])
+    print(vertical_calculations_dict['third_line'])
+    print(vertical_calculations_dict['fourth_line'])
+    print()
 
   def analyze_formula(self) -> None:
     self.set_number_from_input()
@@ -148,7 +188,7 @@ class VerticalCalculator:
     if self.is_invalid_formula():
       return
 
-    self.print_vertical_calculations()
+    self.create_vertical_calculations_dict()
 
   def analyze_input(self) -> None:
     self.set_value_from_input()
