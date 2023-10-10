@@ -118,10 +118,9 @@ class VerticalCalculator:
         return top_ele_space
 
     def create_total_ele_space(self, difference: int) -> str:
-        total_ele_space = '  '
+        total_ele_space = ''
 
-        if difference >= 1:
-            print(1)
+        for i in range(0, difference):
             total_ele_space += ' '
 
         return total_ele_space
@@ -135,7 +134,6 @@ class VerticalCalculator:
         return bottom_ele_space
 
     def create_vertical_calculation(self, formula: str) -> dict:
-        # 奇数番目は必ず記号、偶数番目は必ず数字
         formulaElements: list = re.split(r'[ ]', formula)
 
         top_ele: str = ''
@@ -145,9 +143,7 @@ class VerticalCalculator:
         total: str = self.calculateFormula(formulaElements)
 
         if operator == '-' or len(formulaElements[0]) <= len(formulaElements[2]):
-            # 3801
             top_ele = formulaElements[0]
-            # 2
             bottom_ele = formulaElements[2]
         else:
             top_ele = formulaElements[2]
@@ -172,13 +168,8 @@ class VerticalCalculator:
             bottom_ele_space = self.create_bottom_ele_space(
                 len(top_ele) - len(bottom_ele))
 
-        # last problems
         total_ele_space: str = self.create_total_ele_space(
-            len(total) - len(bottom_ele))
-
-        if operator == '-' and len(top_ele) >= len(bottom_ele):
-            total_ele_space = self.create_total_ele_space(
-                len(total) - len(top_ele))
+                len(dotted_line) - len(total))
 
         vertical_calculation_dict: dict = {
             'first_line': top_ele_space + top_ele + '    ',
