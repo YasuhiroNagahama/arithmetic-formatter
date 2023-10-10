@@ -12,10 +12,10 @@
 
 出力
 
-   235  
-\+  52  
+&nbsp;&nbsp;235  
+\+&nbsp;&nbsp;52  
 \-----  
-   287
+&nbsp;&nbsp;287
 
 # Features
 
